@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, render_template, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from app import db
@@ -45,3 +45,11 @@ def login():
     access_token = create_access_token(identity={'id': user.id, 'role': user.role})
 
     return jsonify({'token': access_token, 'username': user.username, 'role': user.role}), 200
+
+@auth_bp.route('/')
+def home():
+    return render_template('home.html')
+
+@auth_bp.route('/books')
+def books():
+    return "<h1>Books Page (coming soon)</h1>"

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Online Booking System</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      nav {
+        margin-bottom: 20px;
+      }
+      nav a {
+        margin-right: 15px;
+        text-decoration: none;
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="{{ url_for('auth.home') }}">Home</a>
+      <a href="{{ url_for('admin.add_book') }}">Add Book</a>
+      <a href="{{ url_for('auth.login') }}">Login</a>
+      <a href="{{ url_for('auth.register') }}">Register</a>
+      <a href="{{ url_for('auth.books') }}">View Books</a>
+    </nav>
+
+    <h1>Welcome to Online Booking System</h1>
+    <p>Use the navigation above to explore the app.</p>
+  </body>
+</html>

@@ -12,12 +12,16 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     author = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    category = db.Column(db.String(100), nullable=True)
-    isbn = db.Column(db.String(20), unique=True, nullable=True)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, default=0)
+    description = db.Column(db.Text)
+    isbn = db.Column(db.String(50))
+    category = db.Column(db.String(50))
+    image = db.Column(db.String(255))   # <--- Add this line
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)

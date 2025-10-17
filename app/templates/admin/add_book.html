@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add New Book</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add New Book</h1>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <form
+        action="{{ url_for('admin.add_book') }}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div>
+          <label for="title">Title:</label>
+          <input type="text" name="title" id="title" required />
+        </div>
+        <div>
+          <label for="author">Author:</label>
+          <input type="text" name="author" id="author" required />
+        </div>
+        <div>
+          <label for="price">Price:</label>
+          <input type="number" step="0.01" name="price" id="price" required />
+        </div>
+        <div>
+          <label for="stock">Stock:</label>
+          <input type="number" name="stock" id="stock" value="0" />
+        </div>
+        <div>
+          <label for="description">Description:</label>
+          <textarea name="description" id="description"></textarea>
+        </div>
+        <div>
+          <label for="isbn">ISBN:</label>
+          <input type="text" name="isbn" id="isbn" />
+        </div>
+        <div>
+          <label for="category">Category:</label>
+          <input type="text" name="category" id="category" />
+        </div>
+        <div>
+          <label for="image">Book Image:</label>
+          <input type="file" name="image" id="image" accept="image/*" />
+        </div>
+        <div>
+          <button type="submit">Add Book</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
