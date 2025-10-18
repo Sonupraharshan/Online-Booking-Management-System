@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Online Booking System</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #333;
+        color: white;
+        padding: 10px 20px;
+      }
+      nav a,
+      nav span,
+      nav button {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        transition: 0.2s;
+      }
+      nav a:hover,
+      nav button:hover {
+        text-decoration: underline;
+        color: #e0e0e0;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 30px;
+        color: #222;
+      }
+      .book-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .book-item {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .book-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .book-item img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .book-title {
+        font-size: 1.1em;
+        font-weight: 600;
+        margin: 8px 0 4px 0;
+      }
+      .book-author {
+        color: #555;
+        font-size: 0.95em;
+      }
+      .book-price {
+        margin-top: 8px;
+        color: #007bff;
+        font-weight: bold;
+      }
+      .add-cart-btn {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .add-cart-btn:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div>
+        <a href="/auth/">🏠 Home</a>
+        <a href="/auth/login-page" id="loginLink">Login</a>
+        <a href="/auth/register-page" id="registerLink">Register</a>
+        <a href="/cart/page" id="cartLink">🛒 Cart</a>
+      </div>
+      <div>
+        <span id="userStatus"></span>
+        <button
+          id="logoutBtn"
+          style="
+            display: none;
+            background: crimson;
+            padding: 5px 10px;
+            border-radius: 4px;
+          "
+        >
+          Logout
+        </button>
+      </div>
+    </nav>
+
+    <h1>Available Books</h1>
+    <div class="book-list">
+      {% for book in books %}
+      <div class="book-item">
+        <img
+          src="{{ url_for('static', filename='images/books/' ~ book.image) }}"
+          alt="{{ book.title }}"
+        />
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">by {{ book.author }}</div>
+        <div class="book-price">${{ "%.2f"|format(book.price) }}</div>
+        <button class="add-cart-btn" data-book-id="{{ book.id }}">
+          Add to Cart
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <script>
+      // --- Login / Logout ---
+      const token = localStorage.getItem("token");
+      const username = localStorage.getItem("username");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const userStatus = document.getElementById("userStatus");
+
+      if (token && username) {
+        userStatus.innerText = `Welcome, ${username}!`;
+        loginLink.style.display = "none";
+        registerLink.style.display = "none";
+        logoutBtn.style.display = "inline";
+      } else {
+        userStatus.innerText = "";
+        logoutBtn.style.display = "none";
+      }
+
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        window.location.href = "/auth/";
+      });
+
+      // --- Add to Cart ---
+      document.querySelectorAll(".add-cart-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const bookId = parseInt(btn.dataset.bookId);
+          const token = localStorage.getItem("token");
+          if (!token) {
+            alert("Please login first!");
+            return;
+          }
+
+          const res = await fetch("/cart/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ book_id: bookId, quantity: 1 }),
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            alert(result.message);
+          } else {
+            alert(result.error);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,36 +1,42 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
 from app import db
-from app.models import User
+from app.models import User, Book
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import JWTManager
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-# Register a new user
+
+# -------------------------------
+# Register
+# -------------------------------
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
 
     if not all([username, email, password]):
-        return jsonify({'error': 'Missing fields'}), 400
+        return jsonify({'error': 'All fields are required'}), 400
 
     if User.query.filter((User.username == username) | (User.email == email)).first():
-        return jsonify({'error': 'User already exists'}), 409
+        return jsonify({'error': 'Username or email already exists'}), 409
 
     hashed_pw = generate_password_hash(password)
-    new_user = User(username=username, email=email, password=hashed_pw)
-
-    db.session.add(new_user)
+    user = User(username=username, email=email, password=hashed_pw)
+    db.session.add(user)
     db.session.commit()
 
-    return jsonify({'message': 'User registered successfully!'}), 201
+    # CREATE TOKEN USING ONLY USER ID AS STRING
+    access_token = create_access_token(identity=str(user.id))
+    return jsonify({'token': access_token, 'username': user.username}), 200
 
 
-# Login route
+# -------------------------------
+# Login
+# -------------------------------
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -38,18 +44,31 @@ def login():
     password = data.get('password')
 
     user = User.query.filter_by(email=email).first()
-
     if not user or not check_password_hash(user.password, password):
         return jsonify({'error': 'Invalid credentials'}), 401
 
-    access_token = create_access_token(identity={'id': user.id, 'role': user.role})
+    # CREATE TOKEN USING ONLY USER ID AS STRING
+    access_token = create_access_token(identity=str(user.id))
+    return jsonify({'token': access_token, 'username': user.username}), 200
 
-    return jsonify({'token': access_token, 'username': user.username, 'role': user.role}), 200
 
+# -------------------------------
+# Home
+# -------------------------------
 @auth_bp.route('/')
 def home():
-    return render_template('home.html')
+    books = Book.query.all()
+    return render_template('home.html', books=books)
 
-@auth_bp.route('/books')
-def books():
-    return "<h1>Books Page (coming soon)</h1>"
+
+# -------------------------------
+# Login/Register Pages
+# -------------------------------
+@auth_bp.route('/login-page')
+def login_page():
+    return render_template('login.html')
+
+
+@auth_bp.route('/register-page')
+def register_page():
+    return render_template('register.html')

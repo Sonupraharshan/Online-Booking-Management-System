@@ -20,11 +20,19 @@ class Book(db.Model):
     image = db.Column(db.String(255))   # <--- Add this line
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
-
-
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
     booked_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
+    added_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('cart_items', lazy=True))
+    book = db.relationship('Book', backref=db.backref('cart_entries', lazy=True))
