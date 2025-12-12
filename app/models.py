@@ -16,9 +16,21 @@ class Book(db.Model):
     stock = db.Column(db.Integer, default=0)
     description = db.Column(db.Text)
     isbn = db.Column(db.String(50))
-    category = db.Column(db.String(50))
-    image = db.Column(db.String(255))   # <--- Add this line
+    category = db.Column(db.String(50))  # Primary category for filtering
+    genres = db.Column(db.String(255))   # Multiple genres, comma-separated
+    image = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    @property
+    def genres_list(self):
+        """Return genres as a list"""
+        if not self.genres:
+            return [self.category] if self.category else []
+        return [g.strip() for g in self.genres.split(',') if g.strip()]
+    
+    def set_genres(self, genres_list):
+        """Set genres from a list"""
+        self.genres = ','.join(genres_list) if genres_list else ''
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)

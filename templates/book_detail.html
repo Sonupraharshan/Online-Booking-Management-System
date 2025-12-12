@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ book.title }} - BookHaven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0f0f1a;
+        min-height: 100vh;
+        color: #fff;
+      }
+      
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(15, 15, 26, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 15px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .nav-brand {
+        font-size: 1.6em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+      }
+      .nav-links a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: 10px;
+        transition: all 0.3s;
+      }
+      .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .breadcrumb {
+        margin-bottom: 30px;
+      }
+      .breadcrumb a {
+        color: rgba(255,255,255,0.5);
+        text-decoration: none;
+        font-size: 0.9em;
+      }
+      .breadcrumb a:hover {
+        color: #6366f1;
+      }
+      .breadcrumb span {
+        color: rgba(255,255,255,0.3);
+        margin: 0 10px;
+      }
+
+      .book-detail {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 60px;
+        margin-bottom: 60px;
+      }
+
+      .book-image {
+        position: relative;
+      }
+      .book-image img {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      .category-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        font-size: 0.85em;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 25px;
+      }
+
+      .book-info h1 {
+        font-size: 2.5em;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 15px;
+      }
+      .book-author {
+        font-size: 1.2em;
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 25px;
+      }
+      .book-meta {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .meta-item {
+        text-align: center;
+      }
+      .meta-label {
+        font-size: 0.8em;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+      }
+      .meta-value {
+        font-size: 1.1em;
+        font-weight: 600;
+      }
+
+      .book-price {
+        font-size: 3em;
+        font-weight: 700;
+        color: #6366f1;
+        margin-bottom: 30px;
+      }
+
+      .book-description {
+        margin-bottom: 30px;
+      }
+      .book-description h3 {
+        font-size: 1.1em;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .book-description p {
+        color: rgba(255,255,255,0.8);
+        line-height: 1.8;
+        font-size: 1.05em;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        border: none;
+        padding: 18px 40px;
+        border-radius: 14px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn-primary:hover {
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        transform: translateY(-2px);
+      }
+      .btn-secondary {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 18px 40px;
+        border-radius: 14px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.15);
+      }
+
+      /* Related Books */
+      .related-section h2 {
+        font-size: 1.5em;
+        margin-bottom: 25px;
+      }
+      .related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+      }
+      .related-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+      }
+      .related-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+      .related-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .related-card .info {
+        padding: 15px;
+      }
+      .related-card .title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .related-card .price {
+        color: #6366f1;
+        font-weight: 700;
+      }
+
+      @media (max-width: 900px) {
+        .book-detail {
+          grid-template-columns: 1fr;
+        }
+        .related-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" class="nav-brand">📚 BookHaven</a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cart/page">🛒 Cart</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>›</span>
+        <a href="/?category={{ book.category }}">{{ book.category }}</a>
+        <span>›</span>
+        <a href="#">{{ book.title[:30] }}...</a>
+      </div>
+
+      <div class="book-detail">
+        <div class="book-image">
+          {% if book.image %}
+          <img src="{{ url_for('static', filename='images/books/' ~ book.image) }}" alt="{{ book.title }}" />
+          {% else %}
+          <img src="https://via.placeholder.com/400x550/1a1a2e/6366f1?text=📚" alt="{{ book.title }}" />
+          {% endif %}
+          <span class="category-badge">{{ book.category }}</span>
+        </div>
+
+        <div class="book-info">
+          <h1>{{ book.title }}</h1>
+          <p class="book-author">by {{ book.author }}</p>
+
+          <div class="book-meta">
+            <div class="meta-item">
+              <div class="meta-label">Category</div>
+              <div class="meta-value">{{ book.category }}</div>
+            </div>
+            {% if book.isbn %}
+            <div class="meta-item">
+              <div class="meta-label">ISBN</div>
+              <div class="meta-value">{{ book.isbn[:13] }}</div>
+            </div>
+            {% endif %}
+            <div class="meta-item">
+              <div class="meta-label">Stock</div>
+              <div class="meta-value">{{ book.stock }} available</div>
+            </div>
+          </div>
+
+          <div class="book-price">${{ "%.2f"|format(book.price) }}</div>
+
+          <div class="book-description">
+            <h3>Description</h3>
+            <p>{{ book.description or 'No description available for this book.' }}</p>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-primary" data-book-id="{{ book.id }}" onclick="addToCart(this.dataset.bookId)">🛒 Add to Cart</button>
+            <a href="/" class="btn-secondary">← Back to Books</a>
+          </div>
+        </div>
+      </div>
+
+      {% if related %}
+      <div class="related-section">
+        <h2>More in {{ book.category }}</h2>
+        <div class="related-grid">
+          {% for r in related %}
+          <a href="/book/{{ r.id }}" class="related-card">
+            {% if r.image %}
+            <img src="{{ url_for('static', filename='images/books/' ~ r.image) }}" alt="{{ r.title }}" />
+            {% else %}
+            <img src="https://via.placeholder.com/200x200/1a1a2e/6366f1?text=📚" alt="{{ r.title }}" />
+            {% endif %}
+            <div class="info">
+              <div class="title">{{ r.title }}</div>
+              <div class="price">${{ "%.2f"|format(r.price) }}</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <script>
+      async function addToCart(bookId) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Please login first!");
+          window.location.href = "/login";
+          return;
+        }
+
+        const res = await fetch("/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ book_id: bookId, quantity: 1 }),
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert("Added to cart!");
+        } else {
+          alert(result.error || "Failed to add to cart");
+        }
+      }
+    </script>
+  </body>
+</html>

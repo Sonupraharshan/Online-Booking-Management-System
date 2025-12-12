@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Manage Books - BookHaven Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0f0f1a;
+        min-height: 100vh;
+        color: #fff;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(15, 15, 26, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 15px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .nav-brand {
+        font-size: 1.5em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+      }
+      nav a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: 10px;
+        transition: all 0.3s;
+      }
+      nav a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      
+      .access-warning {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #f87171;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+        display: none;
+      }
+      .access-warning a {
+        color: #6366f1;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      
+      .admin-content {
+        display: none;
+      }
+      
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      h1 {
+        font-size: 2em;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .header-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        border: none;
+        font-size: 0.95em;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+      }
+      .btn-warning {
+        background: rgba(234, 179, 8, 0.2);
+        color: #eab308;
+        border: 1px solid rgba(234, 179, 8, 0.3);
+      }
+      .btn-warning:hover {
+        background: rgba(234, 179, 8, 0.3);
+      }
+
+      .flash {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+      .flash.success {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .books-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .books-table th,
+      .books-table td {
+        padding: 15px 20px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .books-table th {
+        background: rgba(255, 255, 255, 0.03);
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        font-size: 0.85em;
+        letter-spacing: 0.5px;
+      }
+      .books-table tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .book-thumb {
+        width: 50px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      .book-thumb.placeholder {
+        background: rgba(99, 102, 241, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5em;
+      }
+      .book-title {
+        font-weight: 600;
+      }
+      .book-category {
+        background: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85em;
+      }
+      .delete-btn {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .delete-btn:hover {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444;
+      }
+      .no-books {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/admin" class="nav-brand">📚 BookHaven Admin</a>
+      <div>
+        <a href="/">🏠 Store</a>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/import-books">Import Books</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="access-warning" id="accessWarning">
+        ⚠️ You need to be logged in as an admin. 
+        <a href="/login">Login here</a>
+      </div>
+      
+      <div class="admin-content" id="adminContent">
+        <div class="header">
+          <h1>📚 Manage Books</h1>
+          <div class="header-actions">
+            <form action="{{ url_for('admin.fix_images') }}" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-warning">🔧 Fix Wrong Images</button>
+            </form>
+            <a href="{{ url_for('admin.import_books') }}" class="btn btn-primary">➕ Import More</a>
+          </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% if books %}
+        <table class="books-table">
+          <thead>
+            <tr>
+              <th>Cover</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in books %}
+            <tr>
+              <td>
+                {% if book.image %}
+                <img src="{{ url_for('static', filename='images/books/' ~ book.image) }}" class="book-thumb" alt="">
+                {% else %}
+                <div class="book-thumb placeholder">📚</div>
+                {% endif %}
+              </td>
+              <td class="book-title">{{ book.title }}</td>
+              <td>{{ book.author }}</td>
+              <td><span class="book-category">{{ book.category }}</span></td>
+              <td>${{ "%.2f"|format(book.price) }}</td>
+              <td>{{ book.stock }}</td>
+              <td>
+                <form action="{{ url_for('admin.delete_book', book_id=book.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete {{ book.title }}?')">
+                  <button type="submit" class="delete-btn">🗑️ Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="no-books">
+          <p>No books yet. <a href="/admin/import-books" style="color: #6366f1;">Import some books</a></p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <script>
+      const role = localStorage.getItem('role');
+      const token = localStorage.getItem('token');
+      
+      if (role === 'admin' && token) {
+        document.getElementById('adminContent').style.display = 'block';
+        document.getElementById('accessWarning').style.display = 'none';
+      } else {
+        document.getElementById('adminContent').style.display = 'none';
+        document.getElementById('accessWarning').style.display = 'block';
+      }
+    </script>
+  </body>
+</html>

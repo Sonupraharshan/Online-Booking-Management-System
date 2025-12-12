@@ -59,7 +59,56 @@ def view_cart():
 
 
 # -------------------------------
-# Cart Page (HTML) - Public route
+# Update quantity of a cart item
+# -------------------------------
+@cart_bp.route('/update', methods=['POST'])
+@jwt_required()
+def update_cart_item():
+    data = request.get_json()
+    cart_id = data.get('cart_id')
+    quantity = data.get('quantity')
+
+    if not cart_id or quantity is None:
+        return jsonify({'error': 'cart_id and quantity required'}), 400
+
+    user_id = int(get_jwt_identity())
+    cart_item = Cart.query.filter_by(id=cart_id, user_id=user_id).first()
+    if not cart_item:
+        return jsonify({'error': 'Cart item not found'}), 404
+
+    if quantity <= 0:
+        db.session.delete(cart_item)
+    else:
+        cart_item.quantity = quantity
+
+    db.session.commit()
+    return jsonify({'message': 'Cart updated'}), 200
+
+
+# -------------------------------
+# Remove item from cart
+# -------------------------------
+@cart_bp.route('/remove', methods=['POST'])
+@jwt_required()
+def remove_from_cart():
+    data = request.get_json()
+    cart_id = data.get('cart_id')
+
+    if not cart_id:
+        return jsonify({'error': 'cart_id required'}), 400
+
+    user_id = int(get_jwt_identity())
+    cart_item = Cart.query.filter_by(id=cart_id, user_id=user_id).first()
+    if not cart_item:
+        return jsonify({'error': 'Item not found'}), 404
+
+    db.session.delete(cart_item)
+    db.session.commit()
+    return jsonify({'message': 'Item removed'}), 200
+
+
+# -------------------------------
+# Cart Page (HTML)
 # -------------------------------
 @cart_bp.route('/page')
 def cart_page():

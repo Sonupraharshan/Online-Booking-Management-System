@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard - BookHaven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0f0f1a;
+        min-height: 100vh;
+        color: #fff;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(15, 15, 26, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 15px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .nav-brand {
+        font-size: 1.5em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+      }
+      nav a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: 10px;
+        transition: all 0.3s;
+      }
+      nav a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 50px 20px;
+      }
+      
+      .access-warning {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #f87171;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+        display: none;
+      }
+      .access-warning a {
+        color: #6366f1;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      
+      .hero {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+      .hero h1 {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1.1em;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+      }
+      .stat-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .stat-number {
+        font-size: 3em;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .stat-label {
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 10px;
+        font-size: 0.95em;
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+      }
+      .action-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 20px;
+        padding: 35px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s;
+        text-decoration: none;
+        color: white;
+        display: block;
+      }
+      .action-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(99, 102, 241, 0.5);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .action-icon {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+      .action-title {
+        font-size: 1.3em;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .action-desc {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.95em;
+        line-height: 1.5;
+      }
+      .action-card.primary {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        border: none;
+      }
+      .action-card.primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+      }
+      .action-card.primary .action-desc {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .action-card.danger {
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      .action-card.danger:hover {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
+      
+      button.action-card {
+        cursor: pointer;
+        width: 100%;
+        font-family: inherit;
+      }
+
+      .categories-section {
+        margin-top: 50px;
+      }
+      .categories-section h2 {
+        margin-bottom: 25px;
+        font-size: 1.3em;
+        color: rgba(255,255,255,0.7);
+      }
+      .category-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .category-chip {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 0.95em;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .category-chip span {
+        color: #6366f1;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+      
+      .admin-content {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/admin" class="nav-brand">📚 BookHaven Admin</a>
+      <div>
+        <a href="/">🏠 Store</a>
+        <a href="/admin">Dashboard</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="access-warning" id="accessWarning">
+        ⚠️ You need to be logged in as an admin to access this page. 
+        <a href="/login">Login here</a>
+      </div>
+      
+      <div class="admin-content" id="adminContent">
+        <div class="hero">
+          <h1>Admin Dashboard</h1>
+          <p>Manage your bookstore inventory</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">{{ book_count }}</div>
+            <div class="stat-label">Total Books</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ categories|length }}</div>
+            <div class="stat-label">Categories</div>
+          </div>
+        </div>
+
+        <div class="actions-grid">
+          <a href="{{ url_for('admin.import_books') }}" class="action-card primary">
+            <div class="action-icon">🌐</div>
+            <div class="action-title">Import Books</div>
+            <div class="action-desc">Search and import books from Open Library with covers, genres, and descriptions</div>
+          </a>
+          
+          <a href="{{ url_for('admin.add_book') }}" class="action-card">
+            <div class="action-icon">➕</div>
+            <div class="action-title">Add Book Manually</div>
+            <div class="action-desc">Add a book with custom details and upload your own cover image</div>
+          </a>
+          
+          <a href="{{ url_for('admin.manage_books') }}" class="action-card">
+            <div class="action-icon">📋</div>
+            <div class="action-title">Manage Books</div>
+            <div class="action-desc">View, edit, or delete individual books from your inventory</div>
+          </a>
+          
+          <a href="/" class="action-card">
+            <div class="action-icon">🛒</div>
+            <div class="action-title">View Store</div>
+            <div class="action-desc">See how your bookstore looks to customers</div>
+          </a>
+
+          <form action="{{ url_for('admin.delete_all_books') }}" method="POST" style="display: contents;" onsubmit="return confirm('Are you sure you want to delete ALL books? This cannot be undone!')">
+            <button type="submit" class="action-card danger">
+              <div class="action-icon">🗑️</div>
+              <div class="action-title">Delete All Books</div>
+              <div class="action-desc">Clear the entire inventory (for testing)</div>
+            </button>
+          </form>
+        </div>
+
+        {% if categories %}
+        <div class="categories-section">
+          <h2>Books by Category</h2>
+          <div class="category-chips">
+            {% for cat, count in categories %}
+            <div class="category-chip">
+              {{ cat }} <span>{{ count }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <script>
+      // Check if user is admin
+      const role = localStorage.getItem('role');
+      const token = localStorage.getItem('token');
+      
+      if (role === 'admin' && token) {
+        // Show admin content
+        document.getElementById('adminContent').style.display = 'block';
+        document.getElementById('accessWarning').style.display = 'none';
+      } else {
+        // Show warning
+        document.getElementById('adminContent').style.display = 'none';
+        document.getElementById('accessWarning').style.display = 'block';
+      }
+    </script>
+  </body>
+</html>
