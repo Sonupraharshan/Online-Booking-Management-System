@@ -5,7 +5,6 @@ A modern, feature-rich book store management system built with Flask and MySQL. 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## ✨ Features
 
